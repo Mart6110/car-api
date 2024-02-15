@@ -1,0 +1,35 @@
+# Dependency directories
+node_modules/
+
+# Environment variables file
+.env
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Directory for storing session data
+sessions/
+
+# Production build output
+dist/
+
+# Local development files
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor-specific files
+.vscode/
+*.swp
