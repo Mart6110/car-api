@@ -3,16 +3,16 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const Car = require('./car.model');
 
-const app = express();
-const port = 3000;
+const app = express(); // Creating an instance of the Express application
+const port = 3000; // Port number for the server to listen on
 
-app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.json()); // Using bodyParser middleware to parse JSON request bodies
+app.use(cors()); // Using cors middleware to enable CORS
 
-let cars = [];
-let nextId = 1;
+let cars = []; // Array to store car data
+let nextId = 1; // Variable to track the next available ID for new cars
 
-// Prefill some data
+// Predefined data for cars
 const prefillData = [
     { rank: 1, model: 'Skoda Enyaq', quantity: 1044, changeQuantityPercent: 284 },
     { rank: 2, model: 'Tesla Model Y', quantity: 989, changeQuantityPercent: 100 },
@@ -45,48 +45,44 @@ const prefillData = [
 cars = prefillData.map(carData => new Car(nextId++, carData.rank, carData.model, carData.quantity, carData.changeQuantityPercent));
 
 
-// GET all cars
-app.get('/cars', (req, res) => {
-    res.json(cars);
-});
-
-// GET car by ID
+// GET car by ID endpoint
 app.get('/cars/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const car = cars.find(car => car.id === id);
+    const id = parseInt(req.params.id); // Get car ID from request parameters
+    const car = cars.find(car => car.id === id); // Find car with matching ID
     if (!car) {
-        return res.status(404).json({ error: 'Car not found' });
+        return res.status(404).json({ error: 'Car not found' }); // Return 404 if car not found
     }
-    res.json(car);
+    res.json(car); // Return JSON response with car data
 });
 
-// POST a new car
+// POST a new car endpoint
 app.post('/cars', (req, res) => {
-    const { rank, model, quantity, changeQuantityPercent } = req.body;
-    const newCar = new Car(nextId++, rank, model, quantity, changeQuantityPercent);
-    cars.push(newCar);
-    res.status(201).json(newCar);
+    const { rank, model, quantity, changeQuantityPercent } = req.body; // Extract car data from request body
+    const newCar = new Car(nextId++, rank, model, quantity, changeQuantityPercent); // Create a new Car instance
+    cars.push(newCar); // Add new car to the cars array
+    res.status(201).json(newCar); // Return JSON response with the newly created car
 });
 
-// PUT (update) an existing car
+// PUT (update) an existing car endpoint
 app.put('/cars/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const { rank, model, quantity, changeQuantityPercent } = req.body;
-    const index = cars.findIndex(car => car.id === id);
+    const id = parseInt(req.params.id); // Get car ID from request parameters
+    const { rank, model, quantity, changeQuantityPercent } = req.body; // Extract updated car data from request body
+    const index = cars.findIndex(car => car.id === id); // Find index of car with matching ID
     if (index === -1) {
-        return res.status(404).json({ error: 'Car not found' });
+        return res.status(404).json({ error: 'Car not found' }); // Return 404 if car not found
     }
-    cars[index] = new Car(id, rank, model, quantity, changeQuantityPercent);
-    res.json(cars[index]);
+    cars[index] = new Car(id, rank, model, quantity, changeQuantityPercent); // Update car data
+    res.json(cars[index]); // Return JSON response with updated car data
 });
 
-// DELETE a car
+// DELETE a car endpoint
 app.delete('/cars/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    cars = cars.filter(car => car.id !== id);
-    res.sendStatus(204);
+    const id = parseInt(req.params.id); // Get car ID from request parameters
+    cars = cars.filter(car => car.id !== id); // Remove car with matching ID from cars array
+    res.sendStatus(204); // Return 204 No Content status
 });
 
+// Start the server and listen on the specified port
 app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
+    console.log(`Server is listening on port ${port}`); // Log a message indicating that the server is running
 });
